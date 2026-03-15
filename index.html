@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Estudos em Dupla</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .timer-font { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .progress-bar { transition: width 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="bg-transparent p-4">
+
+    <div class="max-w-4xl mx-auto flex flex-col gap-6">
+        <!-- Grid para as duas pessoas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Coluna Usuário 1 -->
+            <div class="flex flex-col gap-6">
+                <div class="flex items-center gap-2 px-2">
+                    <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <h2 class="font-bold text-slate-700">Maurício</h2>
+                </div>
+
+                <!-- Pomodoro 1 -->
+                <div class="glass rounded-3xl shadow-xl border border-purple-100 overflow-hidden">
+                    <div class="bg-purple-600 p-3 text-white text-center">
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Pomodoro</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <div id="pomo-display-0" class="timer-font text-5xl font-bold text-slate-800 mb-4">25:00</div>
+                        <div class="flex justify-center gap-2 mb-6">
+                            <button onclick="setMode(0, 'work')" class="text-[10px] px-3 py-1 rounded-full bg-purple-100 text-purple-700 font-bold hover:bg-purple-200 transition">Foco</button>
+                            <button onclick="setMode(0, 'short')" class="text-[10px] px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold hover:bg-slate-200 transition">Pausa</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="pomo-btn-0" onclick="togglePomodoro(0)" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition-all active:scale-95 text-sm">Iniciar</button>
+                            <button onclick="resetPomodoro(0)" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-xl transition">↺</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta 1 -->
+                <div class="glass rounded-3xl shadow-xl border border-purple-100 p-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-slate-600 font-bold text-xs">Progresso</h3>
+                        <span id="goal-percent-0" class="text-purple-600 font-bold text-xs">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-4">
+                        <div id="progress-fill-0" class="progress-bar bg-purple-500 h-full w-0"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button onclick="updateGoal(0, -1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-purple-100 transition">-</button>
+                        <div class="text-center">
+                            <span id="goal-current-0" class="text-base font-bold text-slate-800">0</span>
+                            <span class="text-slate-400">/</span>
+                            <input id="goal-total-0" type="number" value="4" onchange="calcGoal(0)" class="w-6 text-center bg-transparent text-slate-500 font-medium text-sm border-none focus:ring-0">
+                        </div>
+                        <button onclick="updateGoal(0, 1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-purple-100 transition">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna Usuário 2 -->
+            <div class="flex flex-col gap-6">
+                <div class="flex items-center gap-2 px-2">
+                    <div class="w-3 h-3 rounded-full bg-fuchsia-500"></div>
+                    <h2 class="font-bold text-slate-700">Meika</h2>
+                </div>
+
+                <!-- Pomodoro 2 -->
+                <div class="glass rounded-3xl shadow-xl border border-fuchsia-100 overflow-hidden">
+                    <div class="bg-fuchsia-600 p-3 text-white text-center">
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Pomodoro</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <div id="pomo-display-1" class="timer-font text-5xl font-bold text-slate-800 mb-4">25:00</div>
+                        <div class="flex justify-center gap-2 mb-6">
+                            <button onclick="setMode(1, 'work')" class="text-[10px] px-3 py-1 rounded-full bg-fuchsia-100 text-fuchsia-700 font-bold hover:bg-fuchsia-200 transition">Foco</button>
+                            <button onclick="setMode(1, 'short')" class="text-[10px] px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-bold hover:bg-slate-200 transition">Pausa</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="pomo-btn-1" onclick="togglePomodoro(1)" class="flex-1 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-3 rounded-xl transition-all active:scale-95 text-sm">Iniciar</button>
+                            <button onclick="resetPomodoro(1)" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-xl transition">↺</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta 2 -->
+                <div class="glass rounded-3xl shadow-xl border border-fuchsia-100 p-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-slate-600 font-bold text-xs">Progresso</h3>
+                        <span id="goal-percent-1" class="text-fuchsia-600 font-bold text-xs">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-4">
+                        <div id="progress-fill-1" class="progress-bar bg-fuchsia-500 h-full w-0"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button onclick="updateGoal(1, -1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-fuchsia-100 transition">-</button>
+                        <div class="text-center">
+                            <span id="goal-current-1" class="text-base font-bold text-slate-800">0</span>
+                            <span class="text-slate-400">/</span>
+                            <input id="goal-total-1" type="number" value="4" onchange="calcGoal(1)" class="w-6 text-center bg-transparent text-slate-500 font-medium text-sm border-none focus:ring-0">
+                        </div>
+                        <button onclick="updateGoal(1, 1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-fuchsia-100 transition">+</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = [25 * 60, 25 * 60];
+        let timerIds = [null, null];
+        let isRunning = [false, false];
+        let goalCounts = [0, 0];
+
+        function updateDisplay(idx) {
+            const display = document.getElementById(`pomo-display-${idx}`);
+            const mins = Math.floor(timeLeft[idx] / 60).toString().padStart(2, '0');
+            const secs = (timeLeft[idx] % 60).toString().padStart(2, '0');
+            display.textContent = `${mins}:${secs}`;
+        }
+
+        function togglePomodoro(idx) {
+            const btn = document.getElementById(`pomo-btn-${idx}`);
+            if (isRunning[idx]) {
+                clearInterval(timerIds[idx]);
+                btn.textContent = "Continuar";
+            } else {
+                timerIds[idx] = setInterval(() => {
+                    if (timeLeft[idx] > 0) {
+                        timeLeft[idx]--;
+                        updateDisplay(idx);
+                    } else {
+                        clearInterval(timerIds[idx]);
+                        isRunning[idx] = false;
+                        btn.textContent = "Iniciar";
+                        // Custom message to avoid blocking alerts
+                        console.log(`Estudante ${idx + 1}: Ciclo finalizado!`);
+                    }
+                }, 1000);
+                btn.textContent = "Pausar";
+            }
+            isRunning[idx] = !isRunning[idx];
+        }
+
+        function resetPomodoro(idx) {
+            clearInterval(timerIds[idx]);
+            isRunning[idx] = false;
+            timeLeft[idx] = 25 * 60;
+            updateDisplay(idx);
+            document.getElementById(`pomo-btn-${idx}`).textContent = "Iniciar";
+        }
+
+        function setMode(idx, mode) {
+            clearInterval(timerIds[idx]);
+            isRunning[idx] = false;
+            timeLeft[idx] = mode === 'work' ? 25 * 60 : 5 * 60;
+            updateDisplay(idx);
+            document.getElementById(`pomo-btn-${idx}`).textContent = "Iniciar";
+        }
+
+        function updateGoal(idx, val) {
+            goalCounts[idx] = Math.max(0, goalCounts[idx] + val);
+            document.getElementById(`goal-current-${idx}`).textContent = goalCounts[idx];
+            calcGoal(idx);
+        }
+
+        function calcGoal(idx) {
+            const total = parseInt(document.getElementById(`goal-total-${idx}`).value) || 1;
+            const percent = Math.min(100, Math.round((goalCounts[idx] / total) * 100));
+            document.getElementById(`progress-fill-${idx}`).style.width = percent + '%';
+            document.getElementById(`goal-percent-${idx}`).textContent = percent + '%';
+        }
+    </script>
+</body>
+</html>
